@@ -18,7 +18,7 @@ const scrapeLogic = async (res) => {
     // Capture the screenshot
     const page = await browser.newPage();
     const timeout = 10000;
-    await page.goto(url);
+    await page.goto("https://nordic-pulse.com/ski-areas/CA/BC/Black-Jack-Ski-Club");
     await page.setViewport({width: 2160, height: 1920});
     await waitTillHTMLRendered(page)
     console.log(`Capturing screenshot`)
