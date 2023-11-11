@@ -22,7 +22,7 @@ const scrapeLogic = async (res) => {
     await page.setViewport({width: 2160, height: 1920});
     await waitTillHTMLRendered(page)
     console.log(`Capturing screenshot`)
-    console.log(`Capturing screenshot - dark mode? ${darkMode}`)
+    // console.log(`Capturing screenshot - dark mode? ${darkMode}`)
     // if (darkMode === 'true') {
     //     {
     //         const targetPage = page;
