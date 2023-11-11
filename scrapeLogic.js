@@ -18,10 +18,12 @@ const scrapeLogic = async (res) => {
     // Capture the screenshot
     const page = await browser.newPage();
     const timeout = 10000;
-    await page.goto("https://www.example.org/");
-    // await page.goto("https://nordic-pulse.com/ski-areas/CA/BC/Black-Jack-Ski-Club");
-    // await page.setViewport({width: 2160, height: 1920});
-    await page.setViewport({ width: 1080, height: 1024 });
+    // await page.goto("https://www.example.org/");
+    await page.goto("https://nordic-pulse.com/ski-areas/CA/BC/Black-Jack-Ski-Club");
+    await page.setViewport({width: 2160, height: 1920});
+    // await page.setViewport({ width: 1080, height: 1024 });
+    console.log(`Loading page`)
+    
     await waitTillHTMLRendered(page)
     console.log(`Capturing screenshot`)
     // console.log(`Capturing screenshot - dark mode? ${darkMode}`)
@@ -74,7 +76,7 @@ const scrapeLogic = async (res) => {
     //     await delay(2000);
     // }
     
-    // const map = await page.$('body > app-root > div > app-ski-area > div > div > div');
+    const map = await page.$('body > app-root > div > app-ski-area > div > div > div');
     const screenshot = await page.screenshot();
     console.log('Returning screenshot')
     res.setHeader('Content-Type', 'image/png');
