@@ -17,7 +17,7 @@ const scrapeLogic = async (res) => {
   try {
     // Capture the screenshot
     const page = await browser.newPage();
-    const timeout = 10000;
+    const timeout = 30000;
     // await page.goto("https://www.example.org/");
     await page.goto("https://nordic-pulse.com/ski-areas/CA/BC/Black-Jack-Ski-Club");
     await page.setViewport({width: 2160, height: 1920});
@@ -89,7 +89,7 @@ const scrapeLogic = async (res) => {
 }
 }
 
-const waitTillHTMLRendered = async (page, timeout = 30000) => {
+const waitTillHTMLRendered = async (page, timeout = 60000) => {
   const checkDurationMsecs = 1000;
   const maxChecks = timeout / checkDurationMsecs;
   let lastHTMLSize = 0;
