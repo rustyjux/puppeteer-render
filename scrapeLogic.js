@@ -77,6 +77,7 @@ const scrapeLogic = async (res) => {
     // const map = await page.$('body > app-root > div > app-ski-area > div > div > div');
     const screenshot = await page.screenshot();
     console.log('Returning screenshot')
+    res.setHeader('Content-Type', 'image/png');
     res.send(screenshot);
 } catch (e) {
     console.error('Error capturing screenshot:', e);
