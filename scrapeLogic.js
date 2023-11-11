@@ -15,37 +15,106 @@ const scrapeLogic = async (res) => {
         : puppeteer.executablePath(),
   });
   try {
+    // Capture the screenshot
     const page = await browser.newPage();
-
-    await page.goto("https://developer.chrome.com/");
-
-    // Set screen size
-    await page.setViewport({ width: 1080, height: 1024 });
-
-    // Type into search box
-    await page.type(".search-box__input", "automate beyond recorder");
-
-    // Wait and click on first result
-    const searchResultSelector = ".search-box__link";
-    await page.waitForSelector(searchResultSelector);
-    await page.click(searchResultSelector);
-
-    // Locate the full title with a unique string
-    const textSelector = await page.waitForSelector(
-      "text/Customize and automate"
-    );
-    const fullTitle = await textSelector.evaluate((el) => el.textContent);
-
-    // Print the full title
-    const logStatement = `The title of this blog post is ${fullTitle}`;
-    console.log(logStatement);
-    res.send(logStatement);
-  } catch (e) {
-    console.error(e);
+    const timeout = 10000;
+    await page.goto(url);
+    await page.setViewport({width: 2160, height: 1920});
+    await waitTillHTMLRendered(page)
+    console.log(`Capturing screenshot`)
+    console.log(`Capturing screenshot - dark mode? ${darkMode}`)
+    // if (darkMode === 'true') {
+    //     {
+    //         const targetPage = page;
+    //         await puppeteer.Locator.race([
+    //             targetPage.locator('div.map-settings > button'),
+    //             targetPage.locator('::-p-xpath(/html/body/app-root/div/app-ski-area/div/div/div/npl-map-libre/div/div/div[3]/button)'),
+    //             targetPage.locator(':scope >>> div.map-settings > button')
+    //         ])
+    //             .setTimeout(timeout)
+    //             .click({
+    //               offset: {
+    //                 x: 15,
+    //                 y: 14,
+    //               },
+    //             });
+    //     }
+    //     {
+    //         const targetPage = page;
+    //         await puppeteer.Locator.race([
+    //             targetPage.locator('::-p-aria(Dark) >>>> ::-p-aria([role=\\"image\\"])'),
+    //             targetPage.locator('button:nth-of-type(2) > ion-img >>>> img'),
+    //             targetPage.locator(':scope >>> button:nth-of-type(2) > ion-img >>>> :scope >>> img')
+    //         ])
+    //             .setTimeout(timeout)
+    //             .click({
+    //               offset: {
+    //                 x: 31,
+    //                 y: 28,
+    //               },
+    //             });
+    //     }
+    //     {
+    //         const targetPage = page;
+    //         await puppeteer.Locator.race([
+    //             targetPage.locator('div.map-settings > div > span'),
+    //             targetPage.locator('::-p-xpath(/html/body/app-root/div/app-ski-area/div/div/div/npl-map-libre/div/div/div[3]/div/span)'),
+    //             targetPage.locator(':scope >>> div.map-settings > div > span')
+    //         ])
+    //             .setTimeout(timeout)
+    //             .click({
+    //               offset: {
+    //                 x: 13,
+    //                 y: 15,
+    //               },
+    //             });
+    //     }
+    //     await delay(2000);
+    // }
+    
+    const map = await page.$('body > app-root > div > app-ski-area > div > div > div');
+    const screenshot = await map.screenshot();
+    console.log('Returning screenshot')
+    res.send(screenshot);
+} catch (e) {
+    console.error('Error capturing screenshot:', e);
     res.send(`Something went wrong while running Puppeteer: ${e}`);
-  } finally {
-    await browser.close();
-  }
+} finally {
+  await browser.close();
+}
+}
+
+const waitTillHTMLRendered = async (page, timeout = 30000) => {
+  const checkDurationMsecs = 1000;
+  const maxChecks = timeout / checkDurationMsecs;
+  let lastHTMLSize = 0;
+  let checkCounts = 1;
+  let countStableSizeIterations = 0;
+  const minStableSizeIterations = 3;
+
+  while(checkCounts++ <= maxChecks){
+    let html = await page.content();
+    let currentHTMLSize = html.length; 
+
+    let bodyHTMLSize = await page.evaluate(() => document.body.innerHTML.length);
+
+    console.log('last: ', lastHTMLSize, ' <> curr: ', currentHTMLSize, " body html size: ", bodyHTMLSize);
+
+    if(lastHTMLSize != 0 && currentHTMLSize == lastHTMLSize) 
+      countStableSizeIterations++;
+    else 
+      countStableSizeIterations = 0; //reset the counter
+
+    if(countStableSizeIterations >= minStableSizeIterations) {
+      console.log("Page rendered fully..");
+      break;
+    }
+
+    lastHTMLSize = currentHTMLSize;
+    await page.waitForTimeout(checkDurationMsecs);
+  }  
 };
+
+const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 module.exports = { scrapeLogic };
