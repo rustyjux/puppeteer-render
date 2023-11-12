@@ -19,7 +19,7 @@ const scrapeLogic = async (res) => {
     const page = await browser.newPage();
     const timeout = 30000;
     // await page.goto("https://www.example.org/");
-    await page.goto("https://nordic-pulse.com/ski-areas/CA/BC/Black-Jack-Ski-Club");
+    await page.goto("https://nordic-pulse.com/ski-areas/CA/BC/Black-Jack-Ski-Club", {timeout:0});
     await page.setViewport({width: 2160, height: 1920});
     // await page.setViewport({ width: 1080, height: 1024 });
     console.log(`Loading page`)
