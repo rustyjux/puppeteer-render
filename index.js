@@ -5,7 +5,8 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.get("/scrape", (req, res) => {
-  scrapeLogic(res);
+  const darkMode = req.query.darkMode || 'false'; // Set to true to switch map to dark mode
+  scrapeLogic(res, darkMode);
 });
 
 app.get("/", (req, res) => {

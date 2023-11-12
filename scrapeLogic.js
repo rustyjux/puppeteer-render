@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
-const scrapeLogic = async (res) => {
+const scrapeLogic = async (res, darkMode) => {
   const browser = await puppeteer.launch({
     args: [
       "--disable-setuid-sandbox",
@@ -26,7 +26,7 @@ const scrapeLogic = async (res) => {
     
     await waitTillHTMLRendered(page)
     console.log(`Capturing screenshot`)
-    // console.log(`Capturing screenshot - dark mode? ${darkMode}`)
+    console.log(`Capturing screenshot - dark mode? ${darkMode}`)
     // if (darkMode === 'true') {
     //     {
     //         const targetPage = page;
